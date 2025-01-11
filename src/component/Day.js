@@ -1,29 +1,36 @@
-import React from 'react'
-import dummy from "../db/data.json"
-import { useParams } from 'react-router-dom';
-import Word from './Word';
-
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import Word from "./Word";
 
 function Day() {
-    const day = useParams().day;
-    const wordList = dummy.words.filter(word => (
-        word.day === Number(day)
-    ))
-    console.log(wordList)
+  const day = useParams().day;
+  // const wordList = dummy.words.filter(word => (
+  //     word.day === Number(day)
+  // ))
+  // console.log(wordList)
+  const [words, setWords] = useState([]);
 
+  useEffect(() => {
+    fetch(`http://localhost:3001/word?day=${day}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setWords(data);
+      });
+  }, [day]);
   return (
     <>
-    <h2>Day {day}</h2>
-    <table>
+      <h2>Day {day}</h2>
+      <table>
         <tbody>
-            {wordList.map(word => (
-            <Word word = {word} key = {word.id}></Word>
-            ))}
-            
+          {words.map((word) => (
+            <Word word={word} key={word.id}></Word>
+          ))}
         </tbody>
-    </table>
+      </table>
     </>
-  )
+  );
 }
 
-export default Day
+export default Day;
